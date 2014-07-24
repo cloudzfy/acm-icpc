@@ -1,0 +1,96 @@
+#include "stdio.h"
+
+typedef struct
+{
+int key;
+}data;
+data heap1[30005],heap2[30005];
+int n1,n2;
+data heapdown(data heap[],int &n) //³ö¶ÓÁĞ 
+{
+int i,j;
+    data temp , anw = heap[0];
+    heap[0] = heap[--n];
+    i=0;
+    j=2*i+1;
+    temp=heap[0];
+
+    while(j<n)
+    {
+   if(j<n-1&&heap[j].key > heap[j+1].key)j++; 
+        if(temp.key < heap[j].key)
+       break;
+      else
+      {
+       heap[i]=heap[j];
+       i=j;
+       j=2*i+1;
+      }
+} 
+heap[i]=temp; 
+return anw;
+}
+
+void heapup(data heap[],data in,int &n)
+{
+int i,j;
+if(n == 0){heap[n] = in;n++;return ;}
+data temp = in;
+j = n;
+i = (j - 1)/2;
+
+while(i>=0)
+{
+      if(temp.key > heap[i].key)
+       break;
+      else
+      {
+       heap[j] = heap[i];
+       j = i;
+    if(j == 0)
+     i = -1;
+    else
+        i = (j - 1)/2;
+      }
+}
+heap[j] = temp;
+n++;
+}
+
+int main()
+{
+int i,j,k,x,y,add[30005],get[30005] = {0};
+data temp;
+
+while(scanf("%d%d",&x,&y) != EOF)
+{
+   n1 = 0;n2 = 0;
+   for(i = 1;i <= x ; i++)
+   {
+    scanf("%d",add + i);
+    add[i] = -add[i];
+   }
+   for(i = 1;i <= y ;i ++)
+    scanf("%d",get + i);
+  
+   for(i = 1;i <= y ; i++)
+   {
+    for(j = get[i-1] + 1; j <= get[i] ; j++)
+    {
+     temp.key = add[j];
+     heapup(heap1,temp,n1);
+     if(n1 > i - 1)
+     {
+      temp = heapdown(heap1,n1);
+      temp.key = -temp.key;
+      heapup(heap2,temp,n2);
+     }
+    }
+    temp = heapdown(heap2,n2);
+    temp.key = -temp.key;
+    heapup(heap1,temp,n1);
+    printf("%d\n",-heap1[0].key);   
+   }
+}
+return 1;
+}
